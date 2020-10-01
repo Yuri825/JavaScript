@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Игра крестики-нолики</title>
+	<meta charset="utf-8">
+	<style type="text/css">
+		#field td {
+			width: 150px;
+			height: 150px;
+			border: 1px solid black;
+			text-align: center;
+			font-weight: bold;
+			cursor: pointer;
+			font-size: 80px;
+		}
+		#wrapper {
+			height: 90vh;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background-size: contain;
+			background-repeat: no-repeat;
+			background-position: center;
+		}
+		
+		
+		button {
+			width: 200px;
+			height: 50px;
+			margin-right: 20px;
+			border-radius: 30px;
+			background-color: #FFB66C;
+			color: purple;
+			font-size: 15px;
+			font-weight: bold;
+			cursor: pointer;
+			outline: none;
+		}
+		.hide {
+			display: none;
+		}
+		.point {
+			pointer-events: none;
+		}
+
+	</style>
+</head>
+<body>
+
+	<div id="wrapper">
+
+		<button id="buttonEachOther" class="set">Друг против друга</button>
+		<button id="buttonComp" class="set">Против компьютера</button>
+
+		<table id="field" class="set hide">
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td></td>
+				<td></td>
+			</tr>
+		</table>
+	</div>
+</body>
+<script type="text/javascript">
+	//http://code.mu/ru/javascript/book/practice/tick-tack-toe/task-description/
+
+	let cells = document.querySelectorAll('#field td');
+	let field = document.getElementById('field');
+	let buttonEachOther = document.getElementById('buttonEachOther');
+	let buttonComp = document.getElementById('buttonComp');
+	let set = document.querySelectorAll('.set');
+	let switcher;
+	let gamer1;
+	let gamer2;
+
+
+
+	buttonEachOther.addEventListener('click', function() {
+		switcher = 'eachOther';
+		gamer1 = prompt('Введите имя первого игрока');
+		gamer2 = prompt('Введите имя второго игрока');
+		for(let s of set) {
+			s.classList.toggle('hide');
+		}
+		start(cells);
+		isVictory(cells);
+	});
+	buttonComp.addEventListener('click', function() {
+		switcher = 'againstComp';
+		gamer1 = prompt('Введите имя первого игрока');
+		for(let s of set) {
+			s.classList.toggle('hide');
+		}
+		usedCells = [];
+		count = 0;
+		control = true;
+		for(let c of cells) {
+			c.innerHTML = '';
+		}
+		startAgainstComp(cells);
+		isVictory(cells);
+	});
+	
+	
+
+	
+	
+
+		//===========================================//
+	
+	function start(cells) {
+		let i = 0;
+
+		for(let c of cells) {
+
+			c.addEventListener('click', function st() {
+				this.innerHTML = ['X', '0'][i % 2];
+				if(i == 0) {
+					this.style.backgroundColor = "#FF95EF";
+				} else {
+					this.style.backgroundColor = "blue";
+				}
+				c.removeEventListener('click', st);
+
+				if (isVictory(cells)) {
+					if(this.innerHTML == 'X') {
+						alert('Выиграл игрок: ' + gamer1);
+						field.style.display = 'none';
+						wrapper.style.backgroundImage = "url(images/win.jpg)";
+					} else {
+						alert('Выиграл игрок: ' + gamer2);
+						field.style.display = 'none';
+						wrapper.style.backgroundImage = "url(images/draw.jpg)";
+					}
+					
+				}
+			
+				i++;
+				if(i == 9 && isVictory(cells) == false) {
+					alert('Ничья');
+					field.style.display = 'none';
+					wrapper.style.backgroundImage = "url(images/draw.jpg)";
+				}
+			});
+		}
+	}
+
+	function isVictory(cells) {
+	let combs = [
+		[0, 1, 2],
+		[3, 4, 5],
+		[6, 7, 8],
+		[0, 3, 6],
+		[1, 4, 7],
+		[2, 5, 8],
+		[0, 4, 8],
+		[2, 4, 6]
+	];
+
+	for (let comb of combs) {
+		if (
+			cells[comb[0]].innerHTML == cells[comb[1]].innerHTML &&
+			cells[comb[1]].innerHTML == cells[comb[2]].innerHTML &&
+			cells[comb[0]].innerHTML != ''
+		) {
+			console.log(comb);
+			return true;
+		}
+	}
+	return false;
+}
+
+function startAgainstComp(cells) {
+	
+	let stepOfComp;
+	let control = true;
+	let arr = [];
+	let usedCells = [];
+	let notUsed = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+	for(let i = 0; i < cells.length; i++) {
+			cells[i].addEventListener('click', function st() {
+
+				this.innerHTML = 'X';
+				this.style.backgroundColor = "#FF95EF";
+
+				if(isVictory(cells)) {
+					setTimeout(function() {
+						alert('Выиграл игрок');
+						field.style.display = 'none';
+						wrapper.style.backgroundImage = "url(images/win.jpg)";
+					}, 500);
+					
+					control = false;
+					
+
+				}
+
+
+					for(let j = 0; j < notUsed.length; j++) {
+						if(i == notUsed[j]) {
+							console.log(i);
+							console.log(j);
+							usedCells.push(notUsed[j]);
+							notUsed.splice(j, 1);
+							if(notUsed.length == 0 && isVictory(cells) == false) {
+								setTimeout(function() {
+									alert('ничья');
+									
+									field.style.display = 'none';
+									wrapper.style.backgroundImage = "url(images/draw.jpg)";
+								}, 500);
+								control = false;
+							}
+						}
+					}
+				
+			this.removeEventListener('click', st);
+				
+				if(control) {
+
+					stepOfComp = random(notUsed);
+
+				cells[stepOfComp].innerHTML = '0';
+				cells[stepOfComp].classList.add('point');
+				cells[stepOfComp].style.backgroundColor = "blue";
+				
+
+				console.log(cells[stepOfComp]);
+			setTimeout(function() {
+				if(isVictory(cells)) {
+
+					
+						alert('Выиграл компьютер');
+						control = false;
+						field.style.display = 'none';
+						wrapper.style.backgroundImage = "url(images/lose.jpg)";
+					
+				}
+			}, 500);
+
+				for(let j = 0; j < notUsed.length; j++) {
+						if(notUsed[j] == stepOfComp) {
+							
+							usedCells.push(notUsed[j]);
+							notUsed.splice(j, 1);
+						}
+					}
+				
+				}
+				
+				console.log('usedCells: ' + usedCells);
+				console.log('notUsed: ' + notUsed);
+			});
+		}
+}
+
+
+function randomInteger(min, max) {
+  // случайное число от min до (max+1)
+  let rand = min + Math.random() * (max + 1 - min);
+  return Math.floor(rand);
+}
+
+function random(arr) { //перемешивание элементов в массиве и взятие оттуда случайного элемента
+	return arr[randomInteger(0, arr.length - 1)];
+}
+
+</script>
+</html>

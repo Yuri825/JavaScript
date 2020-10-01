@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Задача 1. Угадай ячейку</title>
+	<meta charset="utf-8">
+	<script type="text/javascript" src="jquery-3.4.1.min.js"></script>
+	<style type="text/css">
+		td {
+			border: 1px solid black;
+			width: 40px;
+			height: 40px;
+			cursor: pointer;
+			background-color: gray;
+
+		}
+		td:hover {
+			background-color: green;
+		}
+		#game {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin-top: 20vh;
+		}
+		#win {
+			font-size: 50px;
+			color: orange;
+			text-align: center;
+		}
+		#buttons {
+			text-align: center;
+			
+		}
+		button {
+			cursor: pointer;
+		}
+
+	</style>
+</head>
+<body>
+	<div id="game">
+		<table id="table"></table>
+	</div>
+
+	<p id="win"></p>
+
+	<div id="buttons">
+		<button id="go">Начало игры</button>
+		<button id="reload">Заново</button>
+	</div>
+	
+</body>
+<script type="text/javascript">
+//Давайте теперь реализуем игру угадай ячейку. В этой игре будет дана таблица 10 на 10. Компьютер случайным образом запоминает 10 ячеек из этой таблицы. Игроку нужно кликать на клетки пока он не найдет все загаданные компьютером клетки. 
+
+let table = document.getElementById('table');
+let number = 0;
+
+let a = 0;
+for(let i = 0; i < 10; i++) {
+	let tr = document.createElement('tr');
+	for(let j = 0; j < 10; j++) {
+		let td = document.createElement('td');
+
+		tr.appendChild(td);
+	}
+	table.appendChild(tr);
+}
+let tds = document.querySelectorAll('td');
+
+let obj = {};
+
+$('#go').click(function() {
+	game();
+window.timerId = window.setInterval(timer, 1000);
+});
+
+	let remained = 10;
+	$('td').click(function() {
+		if($('#go').hasClass('active')) {
+	if(remained > 0) {
+		if(this.dataset.check == 'yes') {
+			
+				this.style.background = 'brown';
+			remained--;
+			alert('Молодец, угадал! Осталось угадать: ' + remained);
+			
+		} else {
+			alert('Не угадал');
+			this.style.background = '#2205CB';
+	} 
+
+	} 
+	if(remained == 0) {
+		
+		$('#win').html('Молодец, ты победил!!!');
+	}	
+	}	
+});
+
+$('#reload').click(function() {
+	location.reload();
+});
+
+
+function randomInteger(min, max) {
+  // случайное число от min до (max+1)
+  let rand = min + Math.random() * (max + 1 - min);
+  return Math.floor(rand);
+}
+
+function game() {
+	$('#go').prop('disabled', true);
+	$('#go').addClass('active');
+	let count = 0;
+	for(td of tds) {
+		if(td.dataset.check == 'yes') {
+			count++;
+		}
+	}
+	if(count < 10 && count > 0) {
+		location.reload();
+		game();
+	}
+	for(let i = 0; i < 10; i++) {
+		obj[i] = [randomInteger(0, 9), randomInteger(0, 9)];
+	}
+	for(let keys of Object.keys(obj)) {
+		table.rows[obj[keys][0]].cells[obj[keys][1]].setAttribute('data-check', 'yes');
+	}
+}
+
+function stop(){
+	window.clearInterval(window.timerId);
+}
+
+function timer(){
+	number++;
+	if(number == 600) {
+		stop();
+		alert('Время вышло!!! Вы проиграли!');
+		$('#go').removeClass('active');
+	}
+}
+
+</script>
+</html>

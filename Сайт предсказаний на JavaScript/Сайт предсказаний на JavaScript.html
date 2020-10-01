@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Сайт предсказаний на JavaScript</title>
+	<meta charset="utf-8">
+	<script type="text/javascript" src="serve/jquery-3.4.1.min.js"></script>
+	<script type="text/javascript" src="serve/text.js"></script>
+	<link rel="stylesheet" type="text/css" href="serve/style.css">
+	<style type="text/css">
+
+	</style>
+</head>
+<body>
+	<div id="parent">
+		<div id="timer">?</div>
+		<div id="text"></div>
+		<button id="start" class="active">узнать свою судьбу</button>
+		<button id="stop">получить предсказание</button>
+	</div>
+	
+</body>
+<script type="text/javascript">
+// Сейчас мы с вами сделаем сайт, который будет выдавать предсказания. Пусть на этом сайте будет кнопка, по нажатию на которую будет запускаться таймер, который будет каждые 0.1 секунд выводить в какой-нибудь див случайное число от 1 до некоторого максимального.
+// Под дивом пусть будет другая кнопка, по нажатию на которую пользователь нашего сайта может остановить таймер и зафиксировать некоторое число в диве. Это число будет номером предсказания. После этого покажите пользователю предсказание с этим номером, а все лишние кнопки уберите с экрана, чтобы пользователь не мог получить еще одно предсказание. То есть на один заход на сайт - одно предсказание. 
+//Сделайте так, чтобы предсказания были двух видов: хорошие и плохие. Сделайте так, чтобы плохие красились в красный цвет, а хорошие - в зеленый. 
+	let num = 0;
+	let id;
+	let subArr = randomInteger(0, 1);
+	let subArr1Length = arr[0].length-1;
+	let subArr2Length = arr[1].length-1;
+	$('#start').click(function() {
+		id = setInterval(time, 100);
+		$('#start, #stop').toggleClass('active');
+	});
+
+	$('#stop').click(function() {
+		clearInterval(id);
+		$('#start, #stop').removeClass('active');
+		$('#text').html(arr[subArr][num]);
+		console.log(num);
+		console.log(subArr);
+		console.log(subArr1Length);
+		console.log(subArr2Length);
+		if(subArr == 0) {
+			$('#text').css('color', 'green');
+		} else {
+			$('#text').css('color', 'red');
+		}
+	});
+	
+	function time() {
+		if(subArr == 0) {
+			num = randomInteger(0, subArr1Length);
+		} else {
+			num = randomInteger(0, subArr2Length);
+		}
+
+		$('#timer').html(num);
+
+	}
+
+	function randomInteger(min, max) {
+  let rand = min + Math.random() * (max + 1 - min);
+  return Math.floor(rand);
+}
+
+</script>
+</html>

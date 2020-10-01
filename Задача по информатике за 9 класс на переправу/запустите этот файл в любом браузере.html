@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>задача на переправу</title>
+<meta charset="utf-8">
+<style type="text/css">
+	body {
+		background-image: url('images/rechka.jpg');
+	}
+	#countriman, #duck, #fox, #dog {
+		position: absolute;
+		margin-left: 5px;
+		cursor: pointer;
+		z-index: 2;
+	}
+	#countriman {
+		top: -30px;
+		left: 5px;
+	}
+	#duck {
+		top: 0px;
+		left: 90px;
+		animation-delay: .5s;
+	}
+	#fox {
+		top: 0px;
+		left: 210px;
+	}
+	#dog {
+		top: -40px;
+		left: 320px;
+		animation-delay: .5s;
+	}
+	#dog, #countriman, #fox, #duck {
+		animation-duration: .5s;
+		animation-timing-function: linear;
+		animation-iteration-count: 10;
+		animation-fill-mode: forwards;
+		animation-direction: alternate;
+		-webkit-user-select: none;
+    	-moz-user-select: none;
+    	-ms-user-select: none;
+	}
+	#boat {
+		margin-top: 350px;
+		margin-left: 410px;
+		width: 400px;
+		position: relative;
+		cursor: pointer;
+		z-index: 1;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		animation-duration: 3s;
+		animation-timing-function: ease;
+		animation-fill-mode: forwards;
+		-webkit-user-select: none;
+    	-moz-user-select: none;
+    	-ms-user-select: none;
+	}
+	#edge1, #edge2 {
+		position: absolute;
+		width: 400px;
+		height: 200px;
+		-webkit-user-select: none;
+    	-moz-user-select: none;
+    	-ms-user-select: none;
+	}
+	#edge1 {
+		top: 230px;
+		left: 50px;
+	}
+	#edge2 {
+		right: 10px;
+		top: 130px;
+	}
+	@keyframes anim1 {
+		from {margin-left: 410px;}
+		to{margin-left: 850px;}
+	}
+	@keyframes anim2 {
+		from {margin-left: 850px;}
+		to{margin-left: 410px;}
+	}
+	@keyframes anim3 {
+		from {margin-top: 30px;}
+		to{margin-top: 100px;}
+	}
+	#button1, #button2 {
+		position: absolute;
+		border-radius: 20px;
+		background-color: orange;
+		z-index: 3;
+		width: 20px;
+		height: 20px;
+		cursor: pointer;
+		text-align: center;
+		padding: 5px;
+    	-webkit-user-select: none;
+    	-moz-user-select: none;
+    	-ms-user-select: none;
+	}
+	#button1:hover, #button2:hover {
+		background-color: red;
+	}
+	#button1 {
+		top: 30px;
+		left: 390px;
+	}
+	#button2 {
+		top: 80px;
+		left: -15px;
+	}
+	#foxDuck, #foxDog, #forbidden  {
+		color: white;
+		font-size: 100px;
+		display: none;
+		text-align: center;
+		font-weight: bold;
+		margin-top: 300px;
+	}
+	#forbiddenWithoutCountriman {
+		color: white;
+		font-size: 100px;
+		display: none;
+		text-align: center;
+		font-weight: bold;
+		margin-top: 200px;
+	}
+	#dog.disabled, #fox.disabled, #duck.disabled {
+		pointer-events: none; /* делаем ссылку некликабельной */
+    	cursor: default;  /* устанавливаем курсор в виде стрелки */
+    	color: #999; /* цвет текста для нективной ссылки */
+	}
+	.close-button {
+	    font-size: 30px;
+	    display: inline-block;
+	    border-radius: 18px;
+	    padding: 5px 15px;
+	    background: transparent;
+	    border-style: solid;
+	    color: white;
+	    cursor: pointer;
+	}
+</style>
+</head>
+<body id="body">
+
+	<div id="edge1">
+
+		<div id="countriman" class="player onEdge1">
+			<img src="images/countriman.png">
+		</div>
+
+		<div id="duck" class="player onEdge1 animal">
+			<img src="images/duck.png">
+		</div>
+
+		<div id="fox"  class="player onEdge1 animal">
+			<img src="images/fox.png">
+		</div>
+
+		<div id="dog" class="player onEdge1 animal">
+			<img src="images/dog.png" >
+		</div>
+	</div>
+
+		<div id="boat">
+			<img src="images/boat1.png">
+			<button1 id="button1">&rarr;</button1>
+			<button2 id="button2">&larr;</button1>
+		</div>
+
+		<div id="edge2"></div>
+
+	<div id="errorMessageContainer" style="display:none;">
+		<p id="foxDuck">лиса съела утку</p>
+		<p id="foxDog">собака съела лису</p>
+		<p id="forbidden">нельзя сажать в лодку больше двух пассажиров</p>
+		<p id="forbiddenWithoutCountriman">Лодка без крестьянина не поплывет. В лодке не может быть больше двух пассажиров.</p>
+
+		<div style="width:100%; text-align:center;">
+			<button id="dismissErrorMessage" class="close-button" onclick='restartGame()'>Начать сначала</button>
+		</div>
+	</div>
+	
+</body>
+<script type="text/javascript">
+//На берегу реки стоит крестьянин с лодкой, а рядом с ним - собака, лиса и гусь. Крестьянин должен переправиться сам и перевезти собаку, лису и гуся на другой берег. Однако в лодку кроме крестьянина помещается либо только собака, либо только лиса, либо только гусь. Оставлять же собаку с лисой или лису с гусём без присмотра крестьянина нельзя - собака представляет опасность для лисы, а лиса - для гуся. Как крестьянин должен организовать переправу?
+
+	alert('На берегу реки стоит крестьянин с лодкой, а рядом с ним - собака, лиса и гусь. Крестьянин должен переправиться сам и перевезти собаку, лису и гуся на другой берег. Однако в лодку кроме крестьянина помещается либо только собака, либо только лиса, либо только гусь. Оставлять же собаку с лисой или лису с гусём без присмотра крестьянина нельзя - собака представляет опасность для лисы, а лиса - для гуся. Как крестьянин должен организовать переправу?');
+
+	let countriman = document.getElementById('countriman');
+	let button1 = document.getElementById('button1');
+	let button2 = document.getElementById('button2');
+	let edge1 = document.getElementById('edge1');
+	let edge2 = document.getElementById('edge2');
+	let duck = document.getElementById('duck');
+	let fox = document.getElementById('fox');
+	let dog = document.getElementById('dog');
+	let boat = document.getElementById('boat');
+	let foxDuck = document.getElementById('foxDuck');
+	let foxDog = document.getElementById('foxDog');
+	let forbidden = document.getElementById('forbidden');
+	let dismissErrorMessage = document.getElementById('dismissErrorMessage');
+	let players = document.querySelectorAll('.player');
+	let onBoat1 = document.querySelectorAll('.onBoat1');
+	let onEdge1 = document.querySelectorAll('.onEdge1');
+	let onEdge2 = document.querySelectorAll('.onEdge2');
+	let onBoat2 = document.querySelectorAll('.onBoat2');
+	let current;
+	let body = document.getElementById('body');
+	let forbiddenWithoutCountriman = document.getElementById('forbiddenWithoutCountriman');
+	let animals = document.querySelectorAll('.animal');
+
+	for(play of players) {
+		play.addEventListener('click', function() {
+			if(this.classList.contains('onEdge1')) {
+				boat.appendChild(this);
+				this.classList.add('onBoat1');
+				this.classList.remove('onEdge1');
+			} else if(this.classList.contains('onBoat1')) {
+				edge1.appendChild(this);
+				this.classList.remove('onBoat1');
+				this.classList.add('onEdge1');
+			} else if(this.classList.contains('onBoat2')) {
+				edge2.appendChild(this);
+				this.classList.add('onEdge2');
+				this.classList.remove('onBoat2');
+			} else if (this.classList.contains('onEdge2')) {
+				boat.appendChild(this);
+				this.classList.add('onBoat2');
+				this.classList.remove('onEdge2');
+			}
+			checkOnEdge1();
+			checkOnEdge2();
+			checkOnBoat();
+		});
+	}
+	
+		initButton1();
+		initButton2();
+
+		function initButton1() {
+
+			button1.addEventListener('click', function() {
+
+			if(boat.contains(countriman)) {
+				boat.style.animationName = 'anim1';
+			}
+
+			let boatOnEdge2 = boat.children;
+			for(let a of boatOnEdge2) {
+				if(a.classList.contains('player')) {
+					a.classList.remove('onBoat1');
+					a.classList.add('onBoat2');
+				}
+			}
+
+			for(let onEd1 of onEdge1) {
+				onEd1.classList.add('disabled');
+			}
+				for(let onEd2 of onEdge2) {
+				onEd2.classList.remove('disabled');
+			}
+
+			for(let onBo2 of document.getElementsByClassName('onBoat2')) {
+				onBo2.classList.remove('disabled');
+			}
+
+			for(let onEd2 of document.getElementsByClassName('onEdge2')) {
+				onEd2.classList.remove('disabled');
+			}
+
+			if(boat.contains(countriman) == false) {
+					showErrorMessage(forbiddenWithoutCountriman, 'brown');
+			}
+		});
+		}
+
+		function initButton2() {
+			button2.addEventListener('click', function() {
+
+				if(boat.contains(countriman)) {
+					boat.style.animationName = 'anim2';
+				}
+
+				let boatOnEdge1 = boat.children;
+
+				for(let a of boatOnEdge1) {
+					if(a.classList.contains('player')) {
+						a.classList.remove('onBoat2');
+						a.classList.add('onBoat1');
+					}
+				}
+
+				for(let onEd1 of onEdge1) {
+					onEd1.classList.remove('disabled');
+				}
+
+				for(let onEd2 of document.getElementsByClassName('onEdge2')) {
+					onEd2.classList.add('disabled');
+				}
+						
+				if(boat.contains(countriman) == false) {
+						showErrorMessage(forbiddenWithoutCountriman, 'brown');
+				}
+			});
+		}
+
+		function checkOnEdge1() {
+			if(edge1.contains(fox) &&
+				edge1.contains(dog) &&
+				edge1.contains(countriman) == false &&
+				edge1.contains(duck) == false) {
+					showErrorMessage(foxDog, 'red');
+			}
+		
+
+			if(edge1.contains(fox) &&
+				edge1.contains(duck) && 
+				edge1.contains(countriman) == false &&
+				edge1.contains(dog) == false) {
+					showErrorMessage(foxDuck, 'red');
+			}
+
+			if(document.querySelectorAll('.onBoat1').length > 2) {
+					showErrorMessage(forbidden, 'blue');
+			}
+
+			if(document.querySelectorAll('.onBoat2').length > 2) {
+					showErrorMessage(forbidden, 'blue');
+			}	
+		}
+
+		function checkOnEdge2() {
+			if(edge2.contains(fox) &&
+				edge2.contains(dog) &&
+				edge2.contains(countriman) == false &&
+				edge2.contains(duck) == false) {
+					showErrorMessage(foxDog, 'red');
+			}
+		
+			if(edge2.contains(fox) &&
+				edge2.contains(duck) &&
+				edge2.contains(countriman) == false &&
+				edge2.contains(dog) == false) {
+					showErrorMessage(foxDuck, 'red');
+			}
+				if(edge2.contains(countriman) && edge2.contains(duck) && edge2.contains(dog) && edge2.contains(fox))
+					players.forEach(function(player) {
+					player.style.animationName = 'anim3';
+				});
+
+				if(document.querySelectorAll('.onBoat2').length > 2) {
+					showErrorMessage(forbidden, 'blue');
+			}
+		}
+
+		function checkOnBoat() {
+			if(boat.contains(fox) &&
+				boat.contains(dog) &&
+				boat.contains(countriman) == false) {
+					showErrorMessage(foxDog, 'red');
+			}
+		
+			if(boat.contains(fox) &&
+				boat.contains(duck) &&
+				boat.contains(countriman) == false) {
+				showErrorMessage(foxDuck, 'red');
+			}
+
+			if(boat.contains(dog) &&
+				boat.contains(duck) &&
+				boat.contains(countriman) == false) {
+				showErrorMessage(forbiddenWithoutCountriman, 'brown');
+			}
+		}
+
+		function showErrorMessage(errorElem, color) {
+			body.style.backgroundImage = "url('')";
+			play.style.display = 'none';
+			edge1.style.display = 'none';
+			edge2.style.display = 'none';
+			boat.style.display = 'none';
+			errorElem.style.display = 'block';
+			body.style.backgroundColor = color;
+			errorMessageContainer.style.display = 'block';
+		}
+
+		function restartGame() {
+			location.reload();
+		}
+</script>
+</html>

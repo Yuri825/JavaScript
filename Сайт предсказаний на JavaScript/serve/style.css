@@ -1,0 +1,28 @@
+#parent {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	height: 100vh;
+}
+#parent > * {
+	margin-bottom: 10px;
+}
+
+#timer {
+	font-size: 18px;
+}
+#text {
+	font-size: 27px;
+	font-style: italic;
+	font-weight: bold;
+}
+
+button {
+	padding: 5px 10px;
+	font-size: 15px;
+	cursor: pointer;
+}
+button:not(.active) {
+	display: none;
+}

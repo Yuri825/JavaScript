@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Слайдер текста на JavaScript</title>
+	<meta charset="utf-8">
+	<style type="text/css">
+		.empty {
+			display: none;
+		}
+		#wrapper {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+		}
+	</style>
+</head>
+<body>
+	<div id="wrapper">
+		<div id="slider" >
+			<img src="images/1.jpg" class="img">
+			<img src="images/2.jpg" class="img empty">
+			<img src="images/3.jpg" class="img empty">
+			<img src="images/4.jpg" class="img empty">
+			<img src="images/5.jpg" class="img empty">
+			<img src="images/6.jpg" class="img empty">
+			<img src="images/7.jpg" class="img empty">
+			<img src="images/8.jpg" class="img empty">
+			<img src="images/9.jpg" class="img empty">
+			<img src="images/10.jpg" class="img empty">
+			<img src="images/11.jpg" class="img empty">
+			<img src="images/12.jpg" class="img empty">
+			<img src="images/13.jpg" class="img empty">
+			<img src="images/14.jpg" class="img empty">
+			<img src="images/15.jpg" class="img empty">
+			<img src="images/16.jpg" class="img empty">
+			<img src="images/17.jpg" class="img empty">
+			<img src="images/18.jpg" class="img empty">
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	let slider = document.getElementById('slider');
+	let texts = document.querySelectorAll('.img');
+	let i = 0;
+
+	let id = setInterval(function() {
+		
+		i++;
+		if(i == texts.length) {
+			i = 0;
+		}
+		for(let t of texts) {
+			t.classList.add('empty');
+		}
+		texts[i].classList.remove('empty');
+
+	}, 4000);
+	
+</script>
+</html>

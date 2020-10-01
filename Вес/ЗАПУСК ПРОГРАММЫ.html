@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Учёт веса</title>
+	<meta charset="utf-8">
+	<style type="text/css">
+		#fieldForEnterWeight {
+			width: 300px;
+			font-size: 20px;
+		}
+		button {
+			cursor: pointer;
+		}
+	</style>
+	<link rel="stylesheet" type="text/css" href="service/jquery-ui-1.12.1.custom/jquery-ui.css">
+	<script type="text/javascript" src="service/jquery-3.4.1.min.js"></script>
+	<script type="text/javascript" src="service/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+
+
+</head>
+	<body onload="getGraph()">
+		<div id="wrapper">
+			<input type="text" name="name" id="fieldForEnterWeight" placeholder="введите сегодняшний вес" autocomplete="off">
+			<button id="go">Нажми</button><br><br>
+			<button id="clear">Очистить историю</button><br><br>
+			<canvas id="draw" style="border: 2px solid black" width="1000" height="660">www</canvas>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		//Я худею и каждый день взвешиваюсь на весах.
+		// Необходимо сделать сайт, на котором каждый день нужно указывать текущий
+		// вес. Сайт сам будет запоминать веса по дням в локальном хранилище.
+		// Сайт должен строить график веса по дням (чтобы видеть тенденцию).
+		// Реализовать на канвас.
+		
+
+		$('#go').click(function() {
+			getDate();  //получаем сегодняшнюю дату и записываем в localStorage(ключ - дата, значение - вес из инпута)
+			clearInput();  //очищаем поле ввода
+			fillGraph();  //заполняем график
+		});
+		
+		//рисуем график
+		function getGraph() {
+				let canvas = document.getElementById('draw');
+				let gr = canvas.getContext("2d");
+				let x0 = y0 = 30;
+				
+				let widthX = 940; //длина оси координат X
+				let heightY = 600;  //длина оси координат Y
+				
+			//рисуем вертикальную и горизонтальную оси координат:
+				gr.beginPath();
+				gr.moveTo(x0, y0);
+				gr.lineTo(x0, heightY + y0);
+				gr.lineTo(widthX + x0, heightY + y0);
+
+				//стрелочка на оси Y
+				gr.moveTo(x0, y0);
+				gr.lineTo(x0 - 5, y0 + 5);
+				gr.moveTo(x0, y0);
+				gr.lineTo(x0 + 5, y0 + 5);
+
+				//стрелочка на оси X
+				gr.moveTo(x0 + widthX, y0 + heightY);
+				gr.lineTo(x0 + widthX - 5, y0 + heightY - 5);
+				gr.moveTo(x0 + widthX, y0 + heightY);
+				gr.lineTo(x0 + widthX - 5, y0 + heightY + 5);
+
+				//рисуем шкалу на оси Y
+				for(let i = 40, j = 10; i < heightY; i = i + 40, j = j + 10) {
+					gr.moveTo(x0 - 5, y0 + heightY - i);
+					gr.lineTo(x0 + 5, y0 + heightY - i);
+					gr.fillText(j, x0 - 25, y0 + heightY - i);
+				}
+
+				//рисуем шкалу на оси X
+				for(let i = 80, j = 0; i < widthX; i = i + 80, j++) {
+					gr.moveTo(x0 + i, y0 + heightY - 5);
+					gr.lineTo(x0 + i, y0 + heightY + 5);
+					let json = localStorage.getItem('obj');
+					let obj = JSON.parse(json);
+					
+					if(obj) {
+						if(Object.keys(obj)[j]) {
+							gr.fillText(Object.keys(obj)[j], x0 + i - 30, y0 + heightY + 25);
+						}
+					}
+				}
+
+				gr.stroke();
+
+				let json = localStorage.getItem('obj');
+				let obj = JSON.parse(json);
+				for(let i = 80, j = 0; i < widthX; i = i + 80, j++) {
+						gr.beginPath();
+						gr.arc(x0 + i, y0 + heightY - obj[Object.keys(obj)[j]]*4, 5, 0, getRadians(360));
+						gr.fillStyle = "red";
+						gr.strokeStyle = 'red';
+						gr.fill();
+					gr.stroke();
+
+					gr.beginPath();
+					if(obj[Object.keys(obj)[j]] !== undefined && obj[Object.keys(obj)[j-1]]*4) {
+							gr.moveTo(x0 + i-80,y0 +  heightY - obj[Object.keys(obj)[j-1]]*4);
+							gr.lineTo(x0 + i,y0 +  heightY - obj[Object.keys(obj)[j]]*4);
+							gr.stroke();
+					}
+				}
+			}
+	
+		//заполняем график
+		function fillGraph() {
+			let widthX = 940;
+			let x0 = y0 = 30;
+			let heightY = 600;
+			let canvas = document.getElementById('draw');
+			let gr = canvas.getContext("2d");
+			let json = localStorage.getItem('obj');
+			let obj = JSON.parse(json);
+			console.log(obj);
+			
+				gr.beginPath();
+					if(obj) {
+							gr.fillStyle = "black";
+								gr.fillText(Object.keys(obj)[Object.keys(obj).length-1], x0 + Object.keys(obj).length*80 - 30, y0 + heightY + 25);
+							gr.stroke();
+				}
+				gr.beginPath();
+				let prevWeight = obj[Object.keys(obj)[Object.keys(obj).length-2]];
+				let weight = obj[Object.keys(obj)[Object.keys(obj).length-1]];
+
+				gr.arc(x0 + Object.keys(obj).length*80, y0 + heightY - weight*4, 5, 0, getRadians(360));
+
+				if(prevWeight) {
+					gr.moveTo(x0 + Object.keys(obj).length*80-80,y0 +  heightY - prevWeight*4);
+					gr.lineTo(x0 + Object.keys(obj).length*80,y0 +  heightY - weight*4);
+				}
+				
+				gr.fillStyle = "red";
+				gr.strokeStyle = 'red';
+				gr.fill();
+				gr.stroke();
+		}
+
+		function getDate() {
+			let date = new Date();
+			let data = getZero(date.getDate()) + '.' + getZero(date.getMonth()+1) + '.' + date.getFullYear();
+			if(localStorage.getItem('obj') == null) {
+				let obj = {};
+
+				obj[data] = $('#fieldForEnterWeight').val();
+				let json = JSON.stringify(obj);
+				localStorage.setItem('obj', json);
+		} else {
+			let json = localStorage.getItem('obj');
+			let obj = JSON.parse(json);
+			obj[data] = $('#fieldForEnterWeight').val();
+			json = JSON.stringify(obj);
+			localStorage.setItem('obj', json);
+			}
+		}
+
+		function clearInput() {
+			$('#fieldForEnterWeight').val('');
+		}
+
+		//очищаем localStorage
+		$('#clear').click(function() {
+			localStorage.clear();
+		});
+
+		function getRadians(degrees) {
+			return (Math.PI/180)*degrees;
+		}
+
+		function getZero(num) {
+			if(num > 0 && num < 10) {
+				return '0' + num;
+			} else {
+				return num;
+			}
+		}
+	</script>
+</html> 

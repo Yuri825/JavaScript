@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Игра смена цветов</title>
+	<meta charset="utf-8">
+	<style type="text/css">
+#field td {
+	width: 50px;
+	height: 50px;
+	border: 1px solid black;
+	text-align: center;
+	font-weight: bold;
+	cursor: pointer;
+}
+.red {
+	background-color: red;
+}
+.green {
+	background-color: green;
+}
+.blue {
+	background-color: blue;
+}
+#wrapper {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+#content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+#win {
+	color: red;
+	font-size: 50px;
+}
+
+
+	</style>
+</head>
+<body>
+	<div id="wrapper">
+		<div id="content">
+		<h1 id="gamer" class="www change">Ход игрока № 1</h1>
+		<h1 id="win"></h1>
+		<p id="step">Шаг № 1</p>
+		<p id="min"></p>
+		<table id="field"></table>
+
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	let field = document.getElementById('field');
+	let gamer = document.getElementById('gamer');
+	let win = document.getElementById('win');
+	let step = document.getElementById('step');
+	let min = document.getElementById('min');
+	let num = 1; // счетчик шагов игры
+	let rows = 3;
+	let cells = 3;
+	let colors = ['red', 'green', 'blue'];
+
+	getTable(rows, cells); // строим таблицу
+
+	getColorTd(colors, field);
+
+
+	function changeGamer(gamer) { // смена игрока
+		if(gamer.classList.contains('change')) {
+			gamer.innerHTML = "Ход игрока № 1";
+			num++;
+		} else {
+			gamer.innerHTML = "Ход игрока № 2";
+			num++;
+		}
+	}
+
+	function getColorTd(arr, field) { // шаг игры
+		field.addEventListener('click', function(event) {
+		
+		let colorTd = event.target.style.backgroundColor;
+		
+		let numColor;
+
+		for(let i = 0; i < arr.length; i++) {
+			if(arr[i] == colorTd) {
+				numColor = i;
+				if(numColor == 2) {
+					numColor = -1;
+				}
+				event.target.style.backgroundColor = arr[numColor+1];
+
+			}
+		}
+
+		getWin(event, gamer);
+		gamer.classList.toggle('change');
+		changeGamer(gamer);
+		step.innerHTML = 'Шаг № ' + num;
+		
+	});
+	}
+
+
+	function getWin(event, gamer) { // выявляем победителя
+		let current = event.target.style.backgroundColor;
+		let tds = document.querySelectorAll('td');
+		let count = 0;
+		for(let td of tds) {
+			if(td.style.backgroundColor == current) {
+				count++;
+			}
+
+		}
+
+		if(count == tds.length) {
+
+			gamer.style.display = 'none';
+
+
+
+
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+			min.innerHTML = "Минимальное количество шагов в этой игре было: " + howStepsUntilWinning(); //////////////////////////////////////////////
+
+			if(gamer.classList.contains('change')) {
+				win.innerHTML = "Выиграл игрок № 1";
+			} else {
+				win.innerHTML = "Выиграл игрок № 2";
+			}
+		}
+		
+	}
+
+	function getTable() {
+		for(let i = 0; i < rows; i++){
+			let tr = document.createElement('tr');
+			for(let j = 0; j < cells; j++) {
+				let td = document.createElement('td');
+				td.style.backgroundColor = getColor(colors);
+				tr.appendChild(td);
+			}
+				field.appendChild(tr);
+		}
+	}
+
+	function getColor(arr) {
+		return arr[randomInteger(0, arr.length-1)];
+	}
+
+	function randomInteger(min, max) {
+	  // случайное число от min до (max+1)
+	  let rand = min + Math.random() * (max + 1 - min);
+	  return Math.floor(rand);
+	}
+console.log(howStepsUntilWinning());
+// getArr(howStepsUntilWinning, 'red');
+
+
+
+	function howStepsUntilWinning() { // создаем объект сколько каких цветов 
+		let tds = document.querySelectorAll('td');
+		setColors = {};
+		let countRed = 0;
+		let countBlue = 0;
+		let countGreen = 0;
+		for(let td of tds) {
+			if(td.style.backgroundColor == 'red') {
+				countRed++;
+				setColors['red'] = countRed;
+				
+			}
+			if(td.style.backgroundColor == 'blue') {
+				countBlue++;
+				setColors['blue'] = countBlue;
+				
+			}
+			if(td.style.backgroundColor == 'green') {
+				countGreen++;
+				setColors['green'] = countGreen;
+				
+			}
+			
+		}
+
+		let plan = 0;
+	if(countRed > countGreen && countRed > countBlue || countRed == countBlue && countRed == countGreen) {
+		plan = countGreen*2 + countBlue;
+		return plan;
+	} else if (countGreen > countRed && countGreen > countBlue) {
+		plan = countBlue*2 + countRed;
+		return plan;
+	} else if (countBlue > countGreen && countBlue > countRed) {
+		plan = countRed*2 + countGreen;
+		return plan;
+	}
+
+
+
+		
+	}
+
+</script>
+</html>

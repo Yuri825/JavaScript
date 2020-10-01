@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Гороскоп на JavaScript</title>
+	<meta charset="utf-8">
+	<script type="text/javascript" src="serve/jquery-3.4.1.min.js"></script>
+	<script type="text/javascript" src="serve/text.js"></script>
+	<link rel="stylesheet" type="text/css" href="serve/style.css">
+	<style type="text/css"></style>
+</head>
+<body>
+	<div>
+		<img src="serve/images/star.jpg" id="imgLeft">
+	</div>
+		<div>
+			<img src="serve/images/circle.jpg" id="imgRight">
+			<img src="serve/images/imgLeftDown.jpg" id="imgLeftDown">
+			<img src="serve/images/imgRightDown.jpg" id="imgRightDown">
+		</div>
+	<div id="wrapper">
+		
+		<input type="text" name="" id="enterDate" placeholder="Введите сюда дату своего рождения в формате DD.MM.YYYY" class="clear">
+		<input type="text" name="" id="znak" class="clear" disabled>
+		<p id="par">Прогноз на:</p>
+
+
+		<table id="radio">
+			<tr>
+				<td class="par">сегодня</td>
+				<td class="par">завтра</td>
+				<td class="par">послезавтра</td>
+				
+			</tr>
+			
+			<tr>
+			<td><input type="radio" name="one" value="today" class="radio" id="radio1" checked></td>
+			<td> <input type="radio" name="one" value="tomorrow" class="radio" id="radio2"></td>
+			<td><input type="radio" name="one" value="afterTomorrow" class="radio" id="radio3"></td>
+			</tr>
+
+		</table>
+
+		<textarea id="prediction" class="clear"></textarea>
+	</div>
+	
+</body>
+<script type="text/javascript">
+// Сейчас мы с вами реализуем сайт-гороскоп. Этот сайт будет выдавать гороскопы на сегодня. Пусть пользователь по заходу на сайт видит инпут, в который нужно вбить дату своего рождения. Пусть по нажатию Enter наш сайт выдаст пользователю гороскоп на текущий день за его знак Зодиака.
+// Пусть также у нас будут радиокнопки: сегодня, завтра, послезавтра. Сделаем так, чтобы в зависимости от выбора выводился гороскоп на соответствующий день. Очевидно, что по умолчанию будет выбрано сегодня, но пользователь при желании может изменить свой выбор. 
+	
+	onload = $('.clear').val('');
+
+	$('#enterDate').keydown(function(event) {
+		$('#prediction').val('');
+
+		if(event.keyCode == 13) {
+
+			let input = $(this).val();
+			let day = input.substr(0, 2);
+			let month = input.substr(3, 2);
+			let year = input.substr(6,4);
+			
+			// if(/^([0]?[1-9]|[12][0-9]|[3][01])\.([0]?[1-9]|[1][0-2])\.?(\d{4}\.?)?$/.test(input)) {
+				if(checkDate(year, month, day)) {
+				$('#znak').css('display', 'block');
+				
+
+				
+				let date = new Date(year, month-1, day);
+				let d = getZero(date.getMonth() + 1) + '.' + getZero(date.getDate());
+
+				let arrLength = arr.length-1;
+				let today = randomInteger(0, arrLength);
+				let tomorrow = randomInteger(0, arrLength);
+				while(tomorrow == today) {
+					tomorrow = randomInteger(0, arrLength);
+				}
+				let afterTomorrow = randomInteger(0, arrLength);
+				while(afterTomorrow == today || afterTomorrow == tomorrow) {
+					afterTomorrow = randomInteger(0, arrLength);
+				}
+
+				console.log(today);
+				console.log(tomorrow);
+				console.log(afterTomorrow);
+				console.log('Длина: ' + arrLength);
+								
+				if(d >= "01.20" && d <= "02.18") {
+					$('#znak').val('Ваш знак Зодиака: Водолей');
+					$('#imgLeft').attr('src', 'serve/images/Aquarius.jpg');
+				} else if(d >= "02.19" && d <= "03.20") {
+					$('#znak').val('Ваш знак Зодиака: Рыбы');
+					$('#imgLeft').attr('src', 'serve/images/fish.jpg');
+				} else if(d >= "03.21" && d <= "04.19") {
+					$('#znak').val('Ваш знак Зодиака: Овен');
+					$('#imgLeft').attr('src', 'serve/images/oven.jpg');
+				} else if(d >= "04.20" && d <= "05.20") {
+					$('#znak').val('Ваш знак Зодиака: Телец');
+					$('#imgLeft').attr('src', 'serve/images/telec.jpg');
+				} else if(d >= "05.21" && d <= "06.20") {
+					$('#znak').val('Ваш знак Зодиака: Близнецы');
+					$('#imgLeft').attr('src', 'serve/images/bliznecy.jpg');
+				} else if(d >= "06.21" && d <= "07.22") {
+					$('#znak').val('Ваш знак Зодиака: Рак');
+					$('#imgLeft').attr('src', 'serve/images/rak.jpg');
+				} else if(d >= "07.23" && d <= "08.22") {
+					$('#znak').val('Ваш знак Зодиака: Лев');
+					$('#imgLeft').attr('src', 'serve/images/lev.jpg');
+				} else if(d >= "08.23" && d <= "09.22") {
+					$('#znak').val('Ваш знак Зодиака: Дева');
+					$('#imgLeft').attr('src', 'serve/images/deva.jpg');
+				} else if(d >= "09.23" && d <= "10.22") {
+					$('#znak').val('Ваш знак Зодиака: Весы');
+					$('#imgLeft').attr('src', 'serve/images/vesy.jpg');
+				} else if(d >= "10.23" && d <= "11.22") {
+					$('#znak').val('Ваш знак Зодиака: Скорпион');
+					$('#imgLeft').attr('src', 'serve/images/scorp.jpg');
+				} else if(d >= "11.23" && d <= "12.21") {
+					$('#znak').val('Ваш знак Зодиака: Стрелец');
+					$('#imgLeft').attr('src', 'serve/images/strel.jpg');
+				} else {
+					$('#znak').val('Ваш знак Зодиака: Козерог');
+					$('#imgLeft').attr('src', 'serve/images/kozerog.jpg');
+				}
+
+					$('#prediction').val(arr[today]);
+				$('.radio').change(function() {
+					if($(this).attr('value') == 'today') {
+						$('#prediction').val(arr[today]);
+					} else if($(this).attr('value') == 'tomorrow') {
+						$('#prediction').val(arr[tomorrow]);
+					} else {
+						$('#prediction').val(arr[afterTomorrow]);
+					}
+			
+				});	
+				
+			} else {
+				alert('Вы ввели некорректную дату');
+			}
+		}
+
+
+
+	});
+
+	
+
+	function randomInteger(min, max) {
+  let rand = min + Math.random() * (max + 1 - min);
+  return Math.floor(rand);
+}
+
+
+	
+	function getZero(num) {
+		if(num <= 9) {
+			return '0' + num;
+		} else {
+			return num;
+		}
+	}
+
+	function checkDate(year, month, day) {
+		let date = new Date(year, month-1, day);
+		if(date.getFullYear() == year && date.getMonth() == month-1 && date.getDate() == day) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+</script>
+</html>

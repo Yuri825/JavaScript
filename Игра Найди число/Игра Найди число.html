@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Игра Найди число</title>
+	<meta charset="utf-8">
+	<style type="text/css">
+		#parent {
+	text-align: center;
+}
+#field {
+	display: inline-block;
+}
+
+#field td {
+	padding: 20px;
+	border: 1px solid black;
+	cursor: pointer;
+}
+.active {
+	background: red;
+}
+#parent {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 95vh;
+}
+
+	</style>
+
+</head>
+<body>
+	<div id="parent">
+	<table id="field"></table>
+</div>
+</body>
+<script type="text/javascript">
+	// http://code.mu/ru/javascript/book/practice/game-find-number/task-description/
+
+	let field = document.querySelector('#field');
+	let size = 2;
+
+	start(size);
+
+	function start(size) {
+		activate(build(field, prepare(size)), size);
+	}
+
+	function build(field, arr) {
+		field.innerHTML = '';
+		for(let i = 0; i < arr.length; i++) {
+			let tr = document.createElement('tr');
+			for(let j = 0; j < arr[i].length; j++) {
+				let td = document.createElement('td');
+				tr.appendChild(td);
+				td.innerHTML = arr[i][j]+1;
+			}
+			field.appendChild(tr);
+		}
+		return document.querySelectorAll('td');
+	}
+
+	function activate(cells, size) {
+		let last = size*size;
+		let counter = 1;
+		for (let cell of cells) {
+			
+				cell.addEventListener('click', function() {
+					if(cell.innerHTML == counter) {
+						this.classList.add('active');
+						counter++;
+						if(last == counter-1) {
+						size++;
+						start(size);
+						}
+					}
+				});			
+		}		
+	}
+	
+	function prepare(size) {
+		let arr = [];
+		
+		arr = range(size * size);
+		arr = shuffle(arr);
+		arr = chunk(arr, size);
+		
+		return arr;
+	}
+
+	function range(count) {
+		let arr = [];
+
+		for(let i = 0; i < count; i++) {
+			arr.push(i);
+		}
+		return arr;
+	}
+
+	function shuffle(arr) {
+		let result = [];
+	
+		while (arr.length > 0) {
+			let random = getRandomInt(0, arr.length - 1);
+			let elem = arr.splice(random, 1)[0];
+			result.push(elem);
+	}
+	
+	return result;
+	}
+
+	function chunk(arr, n) {
+		let result = [];
+		
+		let count = Math.ceil(arr.length/n);
+
+		for(let i = 0; i < count; i++) {
+			let elems = arr.splice(0, n);
+			result.push(elems);
+		}
+
+		return result;
+	}
+
+	function getRandomInt(min, max) {
+		return Math.floor(Math.random() * (max - min + 1)) + min;
+	}
+
+</script>
+</html>

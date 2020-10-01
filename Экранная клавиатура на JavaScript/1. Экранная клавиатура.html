@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Задача 1. Преобразование в транслит</title>
+	<meta charset="utf-8">
+	<script type="text/javascript" src="jquery-3.4.1.min.js"></script>
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		#wrapper {
+			width: 100vw;
+			height: 100vh;
+			margin: 0 auto;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+		}
+		#keyboard {
+			border: 1px solid black;
+			width: 1100px;
+			height: 450px;
+		}
+		.button, .caps, .empty {
+			width: 40px	;
+			border: 1px solid black;
+			text-align: center;
+			padding-top: 10px;
+			padding-bottom: 10px;
+			font-size: 20px;
+			background-color: #E2DEFA;
+
+		}
+		
+		#space {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-around;
+			margin-top: 20px;
+			cursor: pointer;
+		}
+		.space {
+			width: 300px;
+			border: 1px solid black;
+			text-align: center;
+			padding-bottom: 20px;
+			padding-top: 20px;
+			font-size: 20px;
+			background-color: #E2DEFA;
+		}
+		
+		.button:hover, .empty:hover, .caps:hover, .space:hover {
+			background-color: #3CE1FF;
+		}
+		.button:active, .empty:active, .caps:active, .space:active {
+			background-color: brown;
+		}
+		#firstRow, #secondRow, #thirdRow, #fourthRow, #fiveRow {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-around;
+			margin-top: 20px;
+			cursor: pointer;
+		}
+		#input {
+			margin-top: 30px;
+
+		}
+		.input {
+			width: 700px;
+			height: 60px;
+			text-align: center;
+			font-size: 20px;
+			background-color: #FFDBD5;
+			border: 1px solid black;	
+		}
+		.high {
+			text-transform: uppercase;
+		}
+		
+
+	</style>
+</head>
+<body>
+	<div id="wrapper">
+		<div id="keyboard">
+			<div id="firstRow">
+				<div class="button">ё</div>
+				<div class="button">1</div>
+				<div class="button">2</div>
+				<div class="button">3</div>
+				<div class="button">4</div>
+				<div class="button">5</div>
+				<div class="button">6</div>
+				<div class="button">7</div>
+				<div class="button">8</div>
+				<div class="button">9</div>
+				<div class="button">0</div>
+			</div>
+
+			<div id="secondRow">
+				<div class="button">й</div>
+				<div class="button">ц</div>
+				<div class="button">у</div>
+				<div class="button">к</div>
+				<div class="button">е</div>
+				<div class="button">н</div>
+				<div class="button">г</div>
+				<div class="button">ш</div>
+				<div class="button">щ</div>
+				<div class="button">з</div>
+				<div class="button">х</div>
+				<div class="button">ъ</div>
+			</div>
+
+			<div id="thirdRow">
+				<div class="button">ф</div>
+				<div class="button">ы</div>
+				<div class="button">в</div>
+				<div class="button">а</div>
+				<div class="button">п</div>
+				<div class="button">р</div>
+				<div class="button">о</div>
+				<div class="button">л</div>
+				<div class="button">д</div>
+				<div class="button">ж</div>
+				<div class="button">э</div>
+			</div>
+
+			<div id="fourthRow">
+				<div class="button">я</div>
+				<div class="button">ч</div>
+				<div class="button">с</div>
+				<div class="button">м</div>
+				<div class="button">и</div>
+				<div class="button">т</div>
+				<div class="button">ь</div>
+				<div class="button">б</div>
+				<div class="button">ю</div>
+			</div>
+
+			<div id="fiveRow">
+				<p class="button">.</p>
+				<p class="button">,</p>
+				<div class="button">?</div>
+				<div class="button">!</div>
+				<div class="button">-</div>
+				<div class="button">+</div>
+				<div class="button">*</div>
+				<div class="button">/</div>
+				<div class="button">=</div>
+				<div class="empty">AC</div>
+				<div class="caps">caps lock</div>
+			</div>
+
+			<div id="space">
+				<div class="space">пробел</div>
+			</div>
+		
+		</div>
+
+		<div id="input">
+			<input type="text" name="" class="input">
+		</div>
+
+	</div>
+</body>
+<script type="text/javascript">
+//Давайте реализуем экранную клавиатуру. На ней должны быть кнопочки со всеми буквами и цифрами клавиатуры компьютера. Кликая мышкой по этим кнопочкам мы сможем вводить данные, например, при неработающей клавиатуре.
+//Реализуйте описанную клавиатуру. Пусть эта клавиатура будет привязана к какому-нибудь инпуту, то есть кликая по ней, мы будем вводить данные в этот инпут.
+//Сделайте на вашей клавиатуре кнопку Caps Lock, которая будет делать так, чтобы все буквы переводились в верхний регистр.
+
+$('.button').click(function() {
+	let self = $('.input').val();
+	$('.input').val(self + $(this).html());
+});
+
+$('.empty').click(function() {
+	$('.input').val('');
+});
+
+$('.space').click(function() {
+	let self = $('.input').val();
+	$('.input').val(self + ' ');
+});
+
+$('.caps').click(function() {
+	$('.input').toggleClass('high');
+});
+</script>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Задача 1. Угадай число</title>
+	<meta charset="utf-8">
+	<script type="text/javascript" src="../jquery-3.4.1.min.js"></script>
+	<style type="text/css"></style>
+</head>
+<body>
+	<input type="text" name="" placeholder="введите число от 1 до 100" id="num">
+	<button id="button">Проверить</button>
+	<p id="answer"></p>
+</body>
+<script type="text/javascript">
+	// Сейчас мы с вами реализуем игру угадай число. В этой игре компьютер загадывает число от 1 до 100. В инпут на экране игрок вводит число от 1 до 100, пытаясь угадать, что же загадал компьютер.
+	// Если игрок ввел число, меньше загаданного, компьютер должен написать 'введите число побольше', а если 
+	// введено больше загаданного, то, соответственно, компьютер должен написать 'введите число поменьше'.
+	let search = Math.floor(1 + Math.random() * (100 + 1 - 1));
+	$('#button').click(function() {
+		console.log(search);
+		let num = $('#num').val();
+		if(num > 0 && num < 101) {
+			if(num > search) {
+				alert('введите число поменьше');
+			} else if(num < search) {
+				alert('введите число побольше');
+			} else if(num == search) {
+				alert('Вы угадали!!!');
+			} 
+		} else {
+			alert('Вы ввели некорректное число');
+		}
+	});
+	
+</script>
+</html>

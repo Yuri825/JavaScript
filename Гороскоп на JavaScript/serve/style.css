@@ -1,0 +1,86 @@
+#wrapper {
+		height: 100vh;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		background-image: url(images/starSky.jpg);
+		background-size: cover;
+	}
+	#enterDate {
+		width: 600px;
+		height: 50px;
+		text-align: center;
+		font-size: 20px;
+		margin-bottom: 20px;
+		margin-top: 20px;
+	}
+	#znak {
+		width: 500px;
+		height: 40px;
+		text-align: center;
+		font-size: 21px;
+		color: purple;
+		margin-bottom: -20px;
+		display: none;
+		background-color: #FFFF95;
+	}
+	.radio {
+		cursor: pointer;
+	}
+	#radio {
+		display: flex;
+		flex-direction: row;
+
+	}
+	#par {
+		font-size: 40px;
+		color: brown;
+		font-weight: bold;
+		margin-bottom: -5px;
+	}
+	td {
+		color: white;
+		/*border: 3px solid red;*/
+		text-align: center;
+		width: 100px;
+		font-size: 25px;
+		font-weight: bold;
+	}
+	#prediction {
+		width: 700px;
+		height: 300px;
+		font-family: fantasy;
+		color: #004200;
+		font-size: 20px;
+		text-align: justify;
+		font-style: italic;
+		padding: 10px;
+		border-radius: 30px;
+		background-color: #A8FFA8;
+	}
+	#imgLeft {
+		width: 200px;
+		position: absolute;
+		left: 20px;
+		top: 20px;
+	}
+	#imgRight {
+		width: 200px;
+		position: absolute;
+		right: 20px;
+		top: 20px;
+	}
+	#imgLeftDown {
+		width: 200px;
+		position: absolute;
+		bottom: 20px;
+		left: 20px;
+	}
+	#imgRightDown {
+		width: 200px;
+		position: absolute;
+		bottom: 20px;
+		right: 20px;
+	}
+	
